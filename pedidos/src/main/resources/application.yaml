@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: pedidos
+  datasource:
+    url: ${DB_HOST:jdbc:postgresql://localhost:5555/icompras_pedidos}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 30
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+server:
+  port: 8083
