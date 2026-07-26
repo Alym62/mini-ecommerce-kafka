@@ -1,4 +1,9 @@
 package com.github.alym62.icompras.controller.dto.response;
 
-public record ProdutoResponseDto() {
+import java.math.BigDecimal;
+
+public record ProdutoResponseDto(
+        String nome,
+        BigDecimal valorUnitario
+) {
 }

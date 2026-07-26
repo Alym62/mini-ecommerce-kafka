@@ -8,10 +8,17 @@ public final class ProdutosMapper {
     private ProdutosMapper() {}
 
     public static ProdutoResponseDto persistenceToResponseDto(ProdutoPersistence persistence) {
-        return new ProdutoResponseDto();
+        return new ProdutoResponseDto(
+                persistence.getNome(),
+                persistence.getValorUnitario()
+        );
     }
 
     public static ProdutoPersistence requestDtoToPersistence(ProdutoRequestDto dto) {
-        return new ProdutoPersistence();
+        ProdutoPersistence persistence = new ProdutoPersistence();
+        persistence.setNome(dto.nome());
+        persistence.setValorUnitario(dto.valorUnitario());
+
+        return persistence;
     }
 }
