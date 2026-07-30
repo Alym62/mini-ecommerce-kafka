@@ -46,7 +46,7 @@ public class PedidoPersistence {
     @Enumerated(EnumType.STRING)
     private StatusPedido status;
 
-    @OneToMany(mappedBy = "pedido")
+    @OneToMany(mappedBy = "pedido", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<ItemPedidoPersistence> itens;
 
     @Transient

@@ -1,14 +1,22 @@
 package com.github.alym62.icompras.pedidos.services;
 
+import com.github.alym62.icompras.pedidos.client.representation.ClienteRepresentation;
+import com.github.alym62.icompras.pedidos.client.representation.ProdutoRepresentation;
 import com.github.alym62.icompras.pedidos.domain.ItemPedidoPersistence;
 import com.github.alym62.icompras.pedidos.domain.PedidoPersistence;
 import com.github.alym62.icompras.pedidos.domain.enums.StatusPedido;
+import com.github.alym62.icompras.pedidos.integrations.ClienteIntegration;
+import com.github.alym62.icompras.pedidos.integrations.ProdutoIntegration;
+import com.github.alym62.icompras.pedidos.integrations.StripeIntegration;
 import com.github.alym62.icompras.pedidos.repositories.PedidosRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -16,7 +24,11 @@ import java.util.Set;
 public class PedidosService {
     private final PedidosRepository pedidosRepository;
     private final ItemPedidosService itemPedidosService;
+    private final StripeIntegration stripeClient;
+    private final ProdutoIntegration produtosClient;
+    private final ClienteIntegration clientesClient;
 
+    @Transactional
     public PedidoPersistence criarPedido(PedidoPersistence pedido) {
         pedido.setStatus(StatusPedido.REALIZADO);
         pedido.setDataPedido(LocalDateTime.now());
@@ -26,8 +38,15 @@ public class PedidosService {
 
         popularPedido(pedido);
 
+        validarPedido(pedido);
+
         pedido = pedidosRepository.save(pedido);
         itemPedidosService.salvarTodosItensDoPedido(pedido.getItens());
+
+        String chaveDePagamentoStripe = stripeClient.enviarPagamento(pedido);
+        if (StringUtils.hasText(chaveDePagamentoStripe)) {
+            pedido.setChavePagamento(chaveDePagamentoStripe);
+        }
 
         return pedido;
     }
@@ -43,5 +62,26 @@ public class PedidosService {
 
     private void popularPedido(PedidoPersistence pedido) {
         pedido.getItens().forEach(item -> item.setPedido(pedido));
+    }
+
+    private void validarPedido(PedidoPersistence pedido) {
+        validarSeClienteExiste(pedido.getCodigoCliente());
+        validarSeProdutoExiste(pedido.getItens());
+    }
+
+    private void validarSeProdutoExiste(final Set<ItemPedidoPersistence> itensDoPedido) {
+        itensDoPedido.forEach(item -> {
+            ProdutoRepresentation produtoExiste = produtosClient.obterProdutoNoMs(item.getCodigoProduto());
+            if (Objects.isNull(produtoExiste)) {
+                throw new RuntimeException("Produto indisponível ou não cadastrado no sistema");
+            }
+        });
+    }
+
+    private void validarSeClienteExiste(final Long codigoDoCliente) {
+        ClienteRepresentation clienteExiste = clientesClient.obterClienteNoMs(codigoDoCliente);
+        if (Objects.isNull(clienteExiste)) {
+            throw new RuntimeException("Produto indisponível ou não cadastrado no sistema");
+        }
     }
 }

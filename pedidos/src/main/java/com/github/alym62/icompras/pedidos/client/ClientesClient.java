@@ -1,0 +1,13 @@
+package com.github.alym62.icompras.pedidos.client;
+
+import com.github.alym62.icompras.pedidos.client.representation.ClienteRepresentation;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+@FeignClient(name = "ms_produtos", url = "${icompras.pedidos.clients.clientes.url}")
+public interface ClientesClient {
+    @GetMapping("/{codigo}")
+    ResponseEntity<ClienteRepresentation> obterDetalhesDoCliente(@PathVariable Long codigo);
+}

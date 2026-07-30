@@ -14,3 +14,13 @@ spring:
       ddl-auto: validate
 server:
   port: 8080
+
+icompras:
+  pedidos:
+    clients:
+      produtos:
+        url: ${MS_PRODUTOS:http://localhost:8081/api/v1/produtos}
+      clientes:
+        url: ${MS_CLIENTES:http://localhost:8082/api/v1/clientes}
+      stripe:
+        url: ${STRIPE_GATEWAY:http://localhost:3000/api/v3/payments}
