@@ -2,6 +2,7 @@ package com.github.alym62.icompras.pedidos.integrations;
 
 import com.github.alym62.icompras.pedidos.client.StripeClient;
 import com.github.alym62.icompras.pedidos.client.representation.ProdutoRepresentation;
+import com.github.alym62.icompras.pedidos.client.representation.StripeRepresentation;
 import com.github.alym62.icompras.pedidos.domain.PedidoPersistence;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +20,10 @@ public class StripeIntegration {
 
     public String enviarPagamento(PedidoPersistence pedidoPersistence) {
         try {
-            ResponseEntity<String> response = stripeClient.enviarPagamentoParaStripe(pedidoPersistence);
+            ResponseEntity<StripeRepresentation> response = stripeClient.enviarPagamentoParaStripe();
             if (Objects.nonNull(response) && Objects.nonNull(response.getBody())){
                 log.info("[Pagamento - Stripe] -> pedido: {}", pedidoPersistence);
-                return response.getBody();
+                return response.getBody().chaveDePagamento();
             }
 
             return null;

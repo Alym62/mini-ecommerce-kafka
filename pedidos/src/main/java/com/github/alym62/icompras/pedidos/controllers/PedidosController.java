@@ -19,10 +19,11 @@ public class PedidosController {
     private final PedidosMapper mapper = PedidosMapper.INSTANCE;
 
     @PostMapping
-    public ResponseEntity<Object> salvar(@RequestBody NovoPedidoRequestDto dto) {
+    public ResponseEntity<PedidoResponseDto> salvar(@RequestBody NovoPedidoRequestDto dto) {
         PedidoPersistence pedidoSalvo = pedidosService.criarPedido(mapper.dtoRequestToPersistence(dto));
+        PedidoResponseDto pedidoMapeado = mapper.persistenceToDtoResponse(pedidoSalvo);
 
-        return ResponseEntity.created(URI.create("/api/v1/produtos/detalhes/" + pedidoSalvo.getCodigo())).body(pedidoSalvo);
+        return ResponseEntity.created(URI.create("/api/v1/produtos/detalhes/" + pedidoSalvo.getCodigo())).body(pedidoMapeado);
     }
 
     @GetMapping("/detalhes/{codigo}")

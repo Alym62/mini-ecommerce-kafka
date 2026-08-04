@@ -1,5 +1,6 @@
 package com.github.alym62.icompras.pedidos.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.alym62.icompras.pedidos.domain.enums.StatusPedido;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -51,4 +51,20 @@ public class PedidoPersistence {
 
     @Transient
     private DadosPagamento dadosDePagamento;
+
+    @Override
+    public String toString() {
+        return "PedidoPersistence{" +
+                "codigo=" + codigo +
+                ", codigoCliente=" + codigoCliente +
+                ", dataPedido=" + dataPedido +
+                ", total=" + total +
+                ", codigoRastreio='" + codigoRastreio + '\'' +
+                ", chavePagamento='" + chavePagamento + '\'' +
+                ", observacoes='" + observacoes + '\'' +
+                ", urlNotaFiscal='" + urlNotaFiscal + '\'' +
+                ", status=" + status +
+                ", dadosDePagamento=" + dadosDePagamento +
+                '}';
+    }
 }
