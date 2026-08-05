@@ -52,6 +52,20 @@ public class PedidosService {
         return pedido;
     }
 
+    public PedidoPersistence obterPedidoPorCodigo(Long codigo) {
+        return pedidosRepository.findById(codigo)
+                .orElseThrow(() -> new NotFoundException("Pedido não encontrado"));
+    }
+
+    public boolean pedidoExisteComCodigoEChaveDePagamento(Long codigo, String chaveDePagamento) {
+        return pedidosRepository.existsByCodigoAndChavePagamento(codigo, chaveDePagamento);
+    }
+
+    @Transactional
+    public void atualizarStatusDoPedido(Long codigoDoPedido, StatusPedido statusDoPedido, String algumaObservacao, String chaveDePagamento) {
+        pedidosRepository.atualizarStatusDePagamentoPorCodigoAndChaveDePagamento(statusDoPedido, algumaObservacao, codigoDoPedido, chaveDePagamento);
+    }
+
     private BigDecimal calcularTotalDoPedido(Set<ItemPedidoPersistence> itensDoPedido) {
         BigDecimal total = BigDecimal.ZERO;
         for (ItemPedidoPersistence item : itensDoPedido) {

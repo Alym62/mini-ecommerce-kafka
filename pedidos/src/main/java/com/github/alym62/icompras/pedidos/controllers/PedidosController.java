@@ -25,9 +25,4 @@ public class PedidosController {
 
         return ResponseEntity.created(URI.create("/api/v1/produtos/detalhes/" + pedidoSalvo.getCodigo())).body(pedidoMapeado);
     }
-
-    @GetMapping("/detalhes/{codigo}")
-    public ResponseEntity<PedidoResponseDto> obterPedido(@PathVariable Long codigo) {
-        return null;
-    }
 }
