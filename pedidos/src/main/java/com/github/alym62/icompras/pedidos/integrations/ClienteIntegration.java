@@ -2,6 +2,7 @@ package com.github.alym62.icompras.pedidos.integrations;
 
 import com.github.alym62.icompras.pedidos.client.ClientesClient;
 import com.github.alym62.icompras.pedidos.client.representation.ClienteRepresentation;
+import com.github.alym62.icompras.pedidos.exceptions.ValidationException;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ public class ClienteIntegration {
             return null;
         } catch (FeignException.NotFound ex) {
             log.error("[MS - Cliente] -> cliente não recuperado: {} - error: {}", codigoCliente, ex.getMessage());
-            throw new RuntimeException(ex.getMessage());
+            throw new ValidationException(ex.getMessage(), "codigoCliente");
         }
     }
 }

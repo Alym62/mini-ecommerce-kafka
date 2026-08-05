@@ -5,6 +5,7 @@ import com.github.alym62.icompras.pedidos.client.representation.ProdutoRepresent
 import com.github.alym62.icompras.pedidos.domain.ItemPedidoPersistence;
 import com.github.alym62.icompras.pedidos.domain.PedidoPersistence;
 import com.github.alym62.icompras.pedidos.domain.enums.StatusPedido;
+import com.github.alym62.icompras.pedidos.exceptions.NotFoundException;
 import com.github.alym62.icompras.pedidos.integrations.ClienteIntegration;
 import com.github.alym62.icompras.pedidos.integrations.ProdutoIntegration;
 import com.github.alym62.icompras.pedidos.integrations.StripeIntegration;
@@ -16,7 +17,6 @@ import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -74,7 +74,7 @@ public class PedidosService {
         itensDoPedido.forEach(item -> {
             ProdutoRepresentation produtoExiste = produtosClient.obterProdutoNoMs(item.getCodigoProduto());
             if (Objects.isNull(produtoExiste)) {
-                throw new RuntimeException("Produto indisponível ou não cadastrado no sistema");
+                throw new NotFoundException("Produto indisponível ou não cadastrado no sistema");
             }
         });
     }
@@ -82,7 +82,7 @@ public class PedidosService {
     private void validarSeClienteExiste(final Long codigoDoCliente) {
         ClienteRepresentation clienteExiste = clientesClient.obterClienteNoMs(codigoDoCliente);
         if (Objects.isNull(clienteExiste)) {
-            throw new RuntimeException("Produto indisponível ou não cadastrado no sistema");
+            throw new NotFoundException("Cliente indisponível ou não cadastrado no sistema");
         }
     }
 }
