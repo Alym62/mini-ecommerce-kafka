@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum TipoPagamento {
+    CREDITO("CREDITO"),
     PIX("PIX");
 
     private final String tipoPagamento;

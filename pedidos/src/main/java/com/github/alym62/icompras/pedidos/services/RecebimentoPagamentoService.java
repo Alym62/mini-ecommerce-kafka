@@ -21,8 +21,9 @@ public class RecebimentoPagamentoService {
 
         if (sucessoDoPagamento) {
             pedidosService.atualizarStatusDoPedido(codigo, StatusPedido.PAGO, null, chaveDePagamento);
-        } else {
-            pedidosService.atualizarStatusDoPedido(codigo, StatusPedido.ERRO_PAGAMENTO, observacoes, chaveDePagamento);
+            return;
         }
+
+        pedidosService.atualizarStatusDoPedido(codigo, StatusPedido.ERRO_PAGAMENTO, observacoes, chaveDePagamento);
     }
 }

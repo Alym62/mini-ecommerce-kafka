@@ -16,10 +16,10 @@ public class AppHandlerException {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ProblemDetail notFoundException(ValidationException exception) {
+    public ProblemDetail notFoundException(NotFoundException exception) {
         final ProblemDetail pb = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
         pb.setTitle("Ops! Não foi possível encontrar as seguintes informações");
-        pb.setDetail(exception.getMessage() + " " + exception.getField());
+        pb.setDetail(exception.getMessage());
         return pb;
     }
 }

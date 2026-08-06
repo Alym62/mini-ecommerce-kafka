@@ -1,5 +1,6 @@
 package com.github.alym62.icompras.pedidos.controllers;
 
+import com.github.alym62.icompras.pedidos.controllers.dto.request.NovoPagamentoRequestDto;
 import com.github.alym62.icompras.pedidos.controllers.dto.request.NovoPedidoRequestDto;
 import com.github.alym62.icompras.pedidos.controllers.dto.response.PedidoResponseDto;
 import com.github.alym62.icompras.pedidos.domain.PedidoPersistence;
@@ -24,5 +25,11 @@ public class PedidosController {
         PedidoResponseDto pedidoMapeado = mapper.persistenceToDtoResponse(pedidoSalvo);
 
         return ResponseEntity.created(URI.create("/api/v1/produtos/detalhes/" + pedidoSalvo.getCodigo())).body(pedidoMapeado);
+    }
+
+    @PostMapping("/gerar-novo-pagamento/{codigoDoPedido}")
+    public ResponseEntity<Void> gerarNovoPagamentoParaPedido(@PathVariable Long codigoDoPedido, @RequestBody NovoPagamentoRequestDto dto) {
+        pedidosService.adicionarNovoPagamentoParaPedido(codigoDoPedido, dto.dadosDePagamento(), dto.tipoDePagamento());
+        return ResponseEntity.noContent().build();
     }
 }

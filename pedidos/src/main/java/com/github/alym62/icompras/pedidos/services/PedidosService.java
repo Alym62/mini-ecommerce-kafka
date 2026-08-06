@@ -2,10 +2,13 @@ package com.github.alym62.icompras.pedidos.services;
 
 import com.github.alym62.icompras.pedidos.client.representation.ClienteRepresentation;
 import com.github.alym62.icompras.pedidos.client.representation.ProdutoRepresentation;
+import com.github.alym62.icompras.pedidos.domain.DadosPagamento;
 import com.github.alym62.icompras.pedidos.domain.ItemPedidoPersistence;
 import com.github.alym62.icompras.pedidos.domain.PedidoPersistence;
 import com.github.alym62.icompras.pedidos.domain.enums.StatusPedido;
+import com.github.alym62.icompras.pedidos.domain.enums.TipoPagamento;
 import com.github.alym62.icompras.pedidos.exceptions.NotFoundException;
+import com.github.alym62.icompras.pedidos.exceptions.ValidationException;
 import com.github.alym62.icompras.pedidos.integrations.ClienteIntegration;
 import com.github.alym62.icompras.pedidos.integrations.ProdutoIntegration;
 import com.github.alym62.icompras.pedidos.integrations.StripeIntegration;
@@ -64,6 +67,29 @@ public class PedidosService {
     @Transactional
     public void atualizarStatusDoPedido(Long codigoDoPedido, StatusPedido statusDoPedido, String algumaObservacao, String chaveDePagamento) {
         pedidosRepository.atualizarStatusDePagamentoPorCodigoAndChaveDePagamento(statusDoPedido, algumaObservacao, codigoDoPedido, chaveDePagamento);
+    }
+
+    @Transactional
+    public void adicionarNovoPagamentoParaPedido(Long codigoDoPedido, String dadoPagamento, TipoPagamento tipoPagamento) {
+        final PedidoPersistence pedidoExistente = obterPedidoPorCodigo(codigoDoPedido);
+        if (!StatusPedido.ERRO_PAGAMENTO.getStatus().equals(pedidoExistente.getStatus().getStatus())) {
+            throw new ValidationException("Ops! Não é possível atualizar um pagamento que não esteja com erro", "status");
+        }
+
+        final DadosPagamento novoDadosDePagamento = new DadosPagamento();
+        novoDadosDePagamento.setDadosPagamento(dadoPagamento);
+        novoDadosDePagamento.setTipoPagamento(tipoPagamento);
+
+        pedidoExistente.setDadosDePagamento(novoDadosDePagamento);
+        pedidoExistente.setStatus(StatusPedido.REALIZADO);
+        pedidoExistente.setObservacoes("AGUARDANDO PROCESSAMENTO");
+
+        String chaveDePagamentoStripe = stripeClient.enviarPagamento(pedidoExistente);
+        if (StringUtils.hasText(chaveDePagamentoStripe)) {
+            pedidoExistente.setChavePagamento(chaveDePagamentoStripe);
+        }
+
+        pedidosRepository.save(pedidoExistente);
     }
 
     private BigDecimal calcularTotalDoPedido(Set<ItemPedidoPersistence> itensDoPedido) {
