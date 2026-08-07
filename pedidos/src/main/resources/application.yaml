@@ -24,3 +24,10 @@ icompras:
         url: ${MS_CLIENTES:http://localhost:8082/api/v1/clientes}
       stripe:
         url: ${STRIPE_GATEWAY:http://localhost:3001/api/v3/payments}
+  config:
+    kafka:
+      server-url: ${SERVER_KAFKA:http://localhost:29092}
+      topics:
+        pedidos-pagos: 'icompras.pedidos-pagos'
+        pedidos-faturados: 'icompras.pedidos-faturados'
+        pedidos-enviados: 'icompras.pedidos-enviados'
