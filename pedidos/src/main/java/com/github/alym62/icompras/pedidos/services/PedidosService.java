@@ -7,6 +7,7 @@ import com.github.alym62.icompras.pedidos.domain.ItemPedidoPersistence;
 import com.github.alym62.icompras.pedidos.domain.PedidoPersistence;
 import com.github.alym62.icompras.pedidos.domain.enums.StatusPedido;
 import com.github.alym62.icompras.pedidos.domain.enums.TipoPagamento;
+import com.github.alym62.icompras.pedidos.domain.vo.ItemPedidoDetalheVo;
 import com.github.alym62.icompras.pedidos.domain.vo.PedidoDetalhesVo;
 import com.github.alym62.icompras.pedidos.exceptions.NotFoundException;
 import com.github.alym62.icompras.pedidos.exceptions.ValidationException;
@@ -23,6 +24,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -79,6 +81,19 @@ public class PedidosService {
                 cliente.telefone()
         );
         pedidoExistente.setDetalhesDoPedido(detalhesDoPedido);
+
+        // @TODO: Implementar Redis para algumas consultas externas
+        pedidoExistente.getItens().forEach(item -> {
+            ProdutoRepresentation produtoExiste = produtosClient.obterProdutoNoMs(item.getCodigoProduto());
+            if (Objects.isNull(produtoExiste)) {
+                throw new NotFoundException("Produto indisponível ou não cadastrado no sistema");
+            }
+
+            ItemPedidoDetalheVo detalheDoItem = new ItemPedidoDetalheVo(
+                    produtoExiste.nome()
+            );
+            item.setDetalheDoItem(detalheDoItem);
+        });
 
         return pedidoExistente;
     }

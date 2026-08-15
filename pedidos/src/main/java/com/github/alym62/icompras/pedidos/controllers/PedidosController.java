@@ -6,7 +6,7 @@ import com.github.alym62.icompras.pedidos.controllers.dto.response.PedidoRespons
 import com.github.alym62.icompras.pedidos.domain.PedidoPersistence;
 import com.github.alym62.icompras.pedidos.mappers.DetalhePedidoMapper;
 import com.github.alym62.icompras.pedidos.mappers.PedidosMapper;
-import com.github.alym62.icompras.pedidos.publisher.representation.DetalhePedidoRepresentation;
+import com.github.alym62.icompras.pedidos.controllers.dto.response.DetalhePedidoResponseDto;
 import com.github.alym62.icompras.pedidos.services.PedidosService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +37,7 @@ public class PedidosController {
     }
 
     @GetMapping("/detalhes/{codigo}")
-    public ResponseEntity<DetalhePedidoRepresentation> obterDetalhesDoPedido(@PathVariable Long codigo) {
+    public ResponseEntity<DetalhePedidoResponseDto> obterDetalhesDoPedido(@PathVariable Long codigo) {
         PedidoPersistence pedido = pedidosService.obterPedidoComDadosCompletos(codigo);
         return ResponseEntity.ok().body(detalhePedidoMapper.persistenceToRepresentationPub(pedido));
     }

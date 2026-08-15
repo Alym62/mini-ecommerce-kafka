@@ -1,5 +1,7 @@
 package com.github.alym62.icompras.pedidos.config;
 
+import com.github.alym62.icompras.pedidos.PedidoProto;
+import com.github.alym62.icompras.pedidos.utils.ProtobufSerializer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,17 +20,17 @@ public class KafkaConfig {
     private String kafkaUrl;
 
     @Bean
-    public ProducerFactory<String, String> producerFactory() {
+    public ProducerFactory<String, PedidoProto.Pedido> producerFactory() {
         final Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaUrl);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ProtobufSerializer.class);
 
         return new DefaultKafkaProducerFactory<>(props);
     }
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate() {
+    public KafkaTemplate<String, PedidoProto.Pedido> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

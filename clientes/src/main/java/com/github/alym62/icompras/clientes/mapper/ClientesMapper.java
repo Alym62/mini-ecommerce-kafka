@@ -23,6 +23,7 @@ public class ClientesMapper {
     public static ClienteResponseDto persistenceToResponseDto(ClientePersistence persistence) {
         return new ClienteResponseDto(
                 persistence.getNome(),
+                persistence.getCpf(),
                 persistence.getLogradouro(),
                 persistence.getNumero(),
                 persistence.getBairro(),

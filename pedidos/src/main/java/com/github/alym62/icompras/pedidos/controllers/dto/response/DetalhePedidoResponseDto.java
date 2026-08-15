@@ -1,11 +1,11 @@
-package com.github.alym62.icompras.pedidos.publisher.representation;
+package com.github.alym62.icompras.pedidos.controllers.dto.response;
 
 import com.github.alym62.icompras.pedidos.domain.enums.StatusPedido;
 
 import java.math.BigDecimal;
 import java.util.Set;
 
-public record DetalhePedidoRepresentation(
+public record DetalhePedidoResponseDto(
         Long codigoPedido,
         Long codigoCliente,
         String nome,
@@ -17,6 +17,6 @@ public record DetalhePedidoRepresentation(
         String dataPedido,
         BigDecimal total,
         StatusPedido statusDoPedido,
-        Set<DetalheItemPedidoRepresentation> itens
+        Set<DetalheItemPedidoResponseDto> itens
 ) {
 }
