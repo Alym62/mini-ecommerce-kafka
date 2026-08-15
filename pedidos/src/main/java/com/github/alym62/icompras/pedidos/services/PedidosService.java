@@ -7,6 +7,7 @@ import com.github.alym62.icompras.pedidos.domain.ItemPedidoPersistence;
 import com.github.alym62.icompras.pedidos.domain.PedidoPersistence;
 import com.github.alym62.icompras.pedidos.domain.enums.StatusPedido;
 import com.github.alym62.icompras.pedidos.domain.enums.TipoPagamento;
+import com.github.alym62.icompras.pedidos.domain.vo.PedidoDetalhesVo;
 import com.github.alym62.icompras.pedidos.exceptions.NotFoundException;
 import com.github.alym62.icompras.pedidos.exceptions.ValidationException;
 import com.github.alym62.icompras.pedidos.integrations.ClienteIntegration;
@@ -58,6 +59,28 @@ public class PedidosService {
     public PedidoPersistence obterPedidoPorCodigo(Long codigo) {
         return pedidosRepository.findById(codigo)
                 .orElseThrow(() -> new NotFoundException("Pedido não encontrado"));
+    }
+
+    public PedidoPersistence obterPedidoComDadosCompletos(Long codigo) {
+        PedidoPersistence pedidoExistente = pedidosRepository.findById(codigo)
+                .orElseThrow(() -> new NotFoundException("Pedido não encontrado"));
+
+        ClienteRepresentation cliente = clientesClient.obterClienteNoMs(pedidoExistente.getCodigoCliente());
+        if (Objects.isNull(cliente)) {
+            throw new NotFoundException("Cliente indisponível ou não cadastrado no sistema");
+        }
+
+        PedidoDetalhesVo detalhesDoPedido = new PedidoDetalhesVo(
+                cliente.nome(),
+                cliente.cpf(),
+                cliente.logradouro(),
+                cliente.bairro(),
+                cliente.email(),
+                cliente.telefone()
+        );
+        pedidoExistente.setDetalhesDoPedido(detalhesDoPedido);
+
+        return pedidoExistente;
     }
 
     public boolean pedidoExisteComCodigoEChaveDePagamento(Long codigo, String chaveDePagamento) {

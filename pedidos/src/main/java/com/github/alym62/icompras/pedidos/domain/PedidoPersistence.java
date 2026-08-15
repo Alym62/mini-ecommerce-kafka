@@ -1,7 +1,7 @@
 package com.github.alym62.icompras.pedidos.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.alym62.icompras.pedidos.domain.enums.StatusPedido;
+import com.github.alym62.icompras.pedidos.domain.vo.PedidoDetalhesVo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -51,6 +51,9 @@ public class PedidoPersistence {
 
     @Transient
     private DadosPagamento dadosDePagamento;
+
+    @Transient
+    private PedidoDetalhesVo detalhesDoPedido;
 
     @Override
     public String toString() {

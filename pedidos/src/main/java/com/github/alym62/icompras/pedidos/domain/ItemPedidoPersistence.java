@@ -1,6 +1,6 @@
 package com.github.alym62.icompras.pedidos.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.github.alym62.icompras.pedidos.domain.vo.ItemPedidoDetalheVo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,6 +31,9 @@ public class ItemPedidoPersistence {
     @JoinColumn(name = "codigo_pedido")
     @ManyToOne(fetch = FetchType.LAZY)
     private PedidoPersistence pedido;
+
+    @Transient
+    private ItemPedidoDetalheVo detalheDoItem;
 
     @Override
     public boolean equals(Object o) {

@@ -4,7 +4,9 @@ import com.github.alym62.icompras.pedidos.controllers.dto.request.NovoPagamentoR
 import com.github.alym62.icompras.pedidos.controllers.dto.request.NovoPedidoRequestDto;
 import com.github.alym62.icompras.pedidos.controllers.dto.response.PedidoResponseDto;
 import com.github.alym62.icompras.pedidos.domain.PedidoPersistence;
+import com.github.alym62.icompras.pedidos.mappers.DetalhePedidoMapper;
 import com.github.alym62.icompras.pedidos.mappers.PedidosMapper;
+import com.github.alym62.icompras.pedidos.publisher.representation.DetalhePedidoRepresentation;
 import com.github.alym62.icompras.pedidos.services.PedidosService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import java.net.URI;
 public class PedidosController {
     private final PedidosService pedidosService;
     private final PedidosMapper mapper = PedidosMapper.INSTANCE;
+    private final DetalhePedidoMapper detalhePedidoMapper = DetalhePedidoMapper.INSTANCE;
 
     @PostMapping
     public ResponseEntity<PedidoResponseDto> salvar(@RequestBody NovoPedidoRequestDto dto) {
@@ -31,5 +34,11 @@ public class PedidosController {
     public ResponseEntity<Void> gerarNovoPagamentoParaPedido(@PathVariable Long codigoDoPedido, @RequestBody NovoPagamentoRequestDto dto) {
         pedidosService.adicionarNovoPagamentoParaPedido(codigoDoPedido, dto.dadosDePagamento(), dto.tipoDePagamento());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/detalhes/{codigo}")
+    public ResponseEntity<DetalhePedidoRepresentation> obterDetalhesDoPedido(@PathVariable Long codigo) {
+        PedidoPersistence pedido = pedidosService.obterPedidoComDadosCompletos(codigo);
+        return ResponseEntity.ok().body(detalhePedidoMapper.persistenceToRepresentationPub(pedido));
     }
 }
