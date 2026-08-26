@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class AppHandlerException {
     @ExceptionHandler(ValidationException.class)
     public ProblemDetail validationException(ValidationException exception) {
-        final ProblemDetail pb = ProblemDetail.forStatus(HttpStatus.BAD_GATEWAY);
+        final ProblemDetail pb = ProblemDetail.forStatus(HttpStatus.PRECONDITION_FAILED);
         pb.setTitle("Ops! Ocorreu um erro ao tentar buscar informações externas");
         pb.setDetail(exception.getMessage() + " " + exception.getField());
         return pb;

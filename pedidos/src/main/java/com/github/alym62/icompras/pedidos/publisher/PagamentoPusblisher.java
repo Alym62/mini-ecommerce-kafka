@@ -1,7 +1,6 @@
 package com.github.alym62.icompras.pedidos.publisher;
 
 import com.github.alym62.icompras.pedidos.domain.PedidoPersistence;
-import com.github.alym62.icompras.pedidos.mappers.DetalhePedidoMapper;
 import com.github.alym62.icompras.pedidos.mappers.proto.PedidoProtoMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
