@@ -1,5 +1,6 @@
 package com.github.alym62.icompras.faturamento.config;
 
+import com.github.alym62.icompras.faturamento.config.props.MinioConfig;
 import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

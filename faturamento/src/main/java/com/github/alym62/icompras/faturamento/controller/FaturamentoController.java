@@ -3,21 +3,20 @@ package com.github.alym62.icompras.faturamento.controller;
 import com.github.alym62.icompras.faturamento.service.BucketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/v1/bucket")
+@RequestMapping("/api/v1/faturamentos")
 @RequiredArgsConstructor
-public class BucketController {
-    private final BucketService service;
+public class FaturamentoController {
+    private final BucketService bucketService;
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> uploadDoArquivo(@RequestParam("arquivo") MultipartFile arquivo) {
-        service.uploadDoArquivoDeFaturamento(arquivo);
-        return ResponseEntity.ok().build();
+    @GetMapping
+    public ResponseEntity<String> obterUrlDoArquivo(@RequestParam("nomeDoArquivo") String nomeDoArquivo) {
+        String arquivo = bucketService.obterArquivoDeFaturamento(nomeDoArquivo);
+        return ResponseEntity.ok(arquivo);
     }
 }

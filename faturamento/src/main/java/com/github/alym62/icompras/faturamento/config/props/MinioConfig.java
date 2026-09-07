@@ -1,4 +1,4 @@
-package com.github.alym62.icompras.faturamento.config;
+package com.github.alym62.icompras.faturamento.config.props;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

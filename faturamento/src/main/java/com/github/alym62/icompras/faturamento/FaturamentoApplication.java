@@ -1,6 +1,6 @@
 package com.github.alym62.icompras.faturamento;
 
-import com.github.alym62.icompras.faturamento.config.MinioConfig;
+import com.github.alym62.icompras.faturamento.config.props.MinioConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

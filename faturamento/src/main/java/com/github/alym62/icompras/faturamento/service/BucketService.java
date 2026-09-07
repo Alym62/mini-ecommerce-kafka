@@ -1,7 +1,8 @@
 package com.github.alym62.icompras.faturamento.service;
 
 import com.github.alym62.icompras.faturamento.bucket.BucketFile;
-import com.github.alym62.icompras.faturamento.config.MinioConfig;
+import com.github.alym62.icompras.faturamento.config.props.MinioConfig;
+import com.github.alym62.icompras.faturamento.exceptions.ArquivoNotFound;
 import com.github.alym62.icompras.faturamento.exceptions.UploadDeArquivoException;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
@@ -23,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Slf4j
 public class BucketService {
+    private static final String MENSAGEM_DE_ERRO = "[Bucket] -> Erro ao tentar realizar upload do arquivo - {}";
+
     private final MinioClient minioClient;
     private final MinioConfig minioConfig;
 
@@ -40,7 +43,26 @@ public class BucketService {
 
             minioClient.putObject(objectArgs);
         } catch (Exception exception) {
-            log.error("[Bucket] -> Erro ao tentar realizar upload do arquivo - {}", exception.getMessage());
+            log.error(MENSAGEM_DE_ERRO, exception.getMessage());
+            throw new UploadDeArquivoException(exception.getMessage());
+        }
+    }
+
+    public String uploadDoArquivoDeFaturamento(BucketFile arquivoParaBucket) {
+        try {
+            String nomeDoArquivo = criarNomeDoArquivoParaUploadPadronizado(arquivoParaBucket.nomeDoArquivo());
+
+            PutObjectArgs objectArgs = PutObjectArgs.builder()
+                    .bucket(minioConfig.bucket())
+                    .object(nomeDoArquivo)
+                    .stream(arquivoParaBucket.is(), arquivoParaBucket.size(), -1)
+                    .contentType(arquivoParaBucket.type().toString())
+                    .build();
+
+            minioClient.putObject(objectArgs);
+            return nomeDoArquivo;
+        } catch (Exception exception) {
+            log.error(MENSAGEM_DE_ERRO, exception.getMessage());
             throw new UploadDeArquivoException(exception.getMessage());
         }
     }
@@ -56,8 +78,24 @@ public class BucketService {
 
             return minioClient.getPresignedObjectUrl(objectArgs);
         } catch (Exception exception) {
-            log.error("[Bucket] -> Erro ao tentar realizar recuperar o arquivo - {}", nomeDoArquivo);
-            throw new RuntimeException();
+            log.error("[Bucket] -> Erro ao tentar recuperar o arquivo - {}", exception.getMessage());
+            throw new ArquivoNotFound(exception.getMessage());
+        }
+    }
+
+    public String obterArquivoDeFaturamentoComPrazoDeUmaSemana(String nomeDoArquivo) {
+        try {
+            GetPresignedObjectUrlArgs objectArgs = GetPresignedObjectUrlArgs.builder()
+                    .method(Method.GET)
+                    .bucket(minioConfig.bucket())
+                    .object(nomeDoArquivo)
+                    .expiry(7, TimeUnit.DAYS)
+                    .build();
+
+            return minioClient.getPresignedObjectUrl(objectArgs);
+        } catch (Exception exception) {
+            log.error("[Bucket] -> Erro ao tentar recuperar o arquivo anual - {}", exception.getMessage());
+            throw new ArquivoNotFound(exception.getMessage());
         }
     }
 
@@ -76,7 +114,7 @@ public class BucketService {
 
     private String criarNomeDoArquivoParaUploadPadronizado(String nomeDoArquivo) {
         LocalDateTime hoje = LocalDateTime.now();
-        return String.format("%s/Id-pedido-%s-%s", minioConfig.path(), nomeDoArquivo,
+        return String.format("%s/%s_%s", minioConfig.path(), nomeDoArquivo,
                 hoje.format(DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm:ss")));
     }
 }
