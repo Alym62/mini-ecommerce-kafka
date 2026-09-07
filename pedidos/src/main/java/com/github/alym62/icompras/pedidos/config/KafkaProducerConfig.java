@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaConfig {
+public class KafkaProducerConfig {
     @Value("${icompras.config.kafka.server-url}")
     private String kafkaUrl;
 

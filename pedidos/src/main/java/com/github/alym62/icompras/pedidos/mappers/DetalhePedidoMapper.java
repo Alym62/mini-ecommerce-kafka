@@ -27,6 +27,8 @@ public interface DetalhePedidoMapper {
     @Mapping(source = "detalhesDoPedido.email", target = "email")
     @Mapping(source = "detalhesDoPedido.telefone", target = "telefone")
     @Mapping(source = "itens", target = "itens", qualifiedByName = "mapearItensDoPedido")
+    @Mapping(source = "urlNotaFiscal", target = "urlNotaFiscal")
+    @Mapping(source = "codigoRastreio", target = "codigoDeRastreio")
     DetalhePedidoResponseDto persistenceToRepresentationPub(PedidoPersistence pedido);
 
     @Named("mapearItensDoPedido")

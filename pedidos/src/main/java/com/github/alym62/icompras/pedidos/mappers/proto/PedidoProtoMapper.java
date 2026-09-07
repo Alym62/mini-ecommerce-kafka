@@ -1,6 +1,7 @@
 package com.github.alym62.icompras.pedidos.mappers.proto;
 
 import com.github.alym62.icompras.pedidos.PedidoProto;
+import com.github.alym62.icompras.pedidos.StatusPedidoProto;
 import com.github.alym62.icompras.pedidos.domain.PedidoPersistence;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,7 @@ public class PedidoProtoMapper {
                 .setTelefone(pedido.getDetalhesDoPedido().telefone())
                 .setDataPedido(pedido.getDataPedido().toString())
                 .setTotal(pedido.getTotal().toString())
-                .setStatusDoPedido(PedidoProto.StatusPedido.valueOf(pedido.getStatus().name()))
+                .setStatusDoPedido(StatusPedidoProto.StatusPedido.valueOf(pedido.getStatus().name()))
                 .addAllItens(itensProto)
                 .build();
     }

@@ -27,9 +27,9 @@ public class PagamentoPusblisher {
         var messageKafka = kafkaTemplate.send(topic, pedido.getCodigo().toString(), protoParaMessageDoKafka);
         messageKafka.whenComplete((resultado, ex) -> {
            if (ex != null) {
-               log.error("Erro ao tentar enviar mensagem para o topico -> {}", ex.getMessage());
+               log.error("[Pedido/Pagamento] -> Erro ao tentar enviar mensagem para o topico -> {}", ex.getMessage());
            } else {
-               log.info("Pedido enviado com sucesso");
+               log.info("[Pedido/Pagamento] -> Pedido enviado com sucesso");
            }
         });
     }

@@ -11,6 +11,7 @@ import com.github.alym62.icompras.pedidos.domain.vo.ItemPedidoDetalheVo;
 import com.github.alym62.icompras.pedidos.domain.vo.PedidoDetalhesVo;
 import com.github.alym62.icompras.pedidos.exceptions.NotFoundException;
 import com.github.alym62.icompras.pedidos.exceptions.ValidationException;
+import com.github.alym62.icompras.pedidos.input.PedidoFaturadoInput;
 import com.github.alym62.icompras.pedidos.integrations.ClienteIntegration;
 import com.github.alym62.icompras.pedidos.integrations.ProdutoIntegration;
 import com.github.alym62.icompras.pedidos.integrations.StripeIntegration;
@@ -100,6 +101,19 @@ public class PedidosService {
 
     public boolean pedidoExisteComCodigoEChaveDePagamento(Long codigo, String chaveDePagamento) {
         return pedidosRepository.existsByCodigoAndChavePagamento(codigo, chaveDePagamento);
+    }
+
+    @Transactional
+    public void atualizarPedidoFaturado(Long codigoDoPedido, StatusPedido statusDoPedido, String urlNF, String codigoRastreio) {
+        PedidoPersistence pedidoExistente = obterPedidoPorCodigo(codigoDoPedido);
+        pedidoExistente.setStatus(statusDoPedido);
+        pedidoExistente.setUrlNotaFiscal(urlNF);
+
+        if (codigoRastreio != null) {
+            pedidoExistente.setCodigoRastreio(codigoRastreio);
+        }
+
+        pedidosRepository.save(pedidoExistente);
     }
 
     @Transactional

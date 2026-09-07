@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package com.github.alym62.icompras.pedidos;
 
+import "status_pedido.proto";
+
 option java_package = "com.github.alym62.icompras.pedidos";
 option java_outer_classname = "PedidoProto";
 
@@ -18,16 +20,6 @@ message Pedido {
   string total = 10; // BigDecimal como string
   StatusPedido status_do_pedido = 11;
   repeated DetalheItemPedido itens = 12;
-}
-
-enum StatusPedido {
-  STATUS_PEDIDO_UNSPECIFIED = 0; // obrigatório em proto3, não existe no enum Java
-  REALIZADO = 1;
-  PAGO = 2;
-  FATURADO = 3;
-  ENVIADO = 4;
-  ERRO_PAGAMENTO = 5;
-  PREPARANDO_ENVIO = 6;
 }
 
 message DetalheItemPedido {

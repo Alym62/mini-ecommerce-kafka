@@ -17,6 +17,8 @@ public record DetalhePedidoResponseDto(
         String dataPedido,
         BigDecimal total,
         StatusPedido statusDoPedido,
-        Set<DetalheItemPedidoResponseDto> itens
+        Set<DetalheItemPedidoResponseDto> itens,
+        String urlNotaFiscal,
+        String codigoDeRastreio
 ) {
 }
