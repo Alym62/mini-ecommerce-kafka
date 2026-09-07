@@ -1,0 +1,19 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: logistica
+  kafka:
+    bootstrap-servers: ${SERVER_KAFKA:localhost:29092}
+    consumer:
+      group-id: icompras-logistica
+      auto-offset-reset: earliest
+
+icompras:
+  config:
+    kafka:
+      group: 'icompras-logistica'
+      topics:
+        pedidos-faturados: 'icompras.pedidos-faturados'
+        pedidos-enviados: 'icompras.pedidos-enviados'

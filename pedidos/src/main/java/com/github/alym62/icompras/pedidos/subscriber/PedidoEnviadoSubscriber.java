@@ -1,6 +1,6 @@
 package com.github.alym62.icompras.pedidos.subscriber;
 
-import com.github.alym62.icompras.pedidos.FaturamentoPedidoProto;
+import com.github.alym62.icompras.pedidos.PedidoEnviadoProto;
 import com.github.alym62.icompras.pedidos.input.PedidoFaturadoInput;
 import com.github.alym62.icompras.pedidos.mappers.proto.PedidoFaturadoProtoMapper;
 import com.github.alym62.icompras.pedidos.services.PedidosService;
@@ -12,19 +12,19 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class PedidoFaturadoSubscriber {
+public class PedidoEnviadoSubscriber {
     private final PedidosService pedidosService;
     private final PedidoFaturadoProtoMapper pedidoFaturadoProtoMapper;
 
     @KafkaListener(
             groupId = "${icompras.config.kafka.group}",
-            topics = "${icompras.config.kafka.topics.pedidos-faturados}",
-            containerFactory = "concurrentKafkaListenerContainerFactory"
+            topics = "${icompras.config.kafka.topics.pedidos-enviados}",
+            containerFactory = "concurrentKafkaListenerContainerFactoryPedidoEnviado"
     )
-    public void pedidoFaturadoSub(FaturamentoPedidoProto.FaturamentoDoPedido pedidoFaturado) {
-        log.info("[Pedidos] -> Pedido faturado recebido: {}", pedidoFaturado.getCodigoPedido());
+    public void pedidoEnviadoSub(PedidoEnviadoProto.PedidoEnviado pedidoEnviado) {
+        log.info("[Pedidos] -> Pedido enviado recebido: {}", pedidoEnviado.getCodigoPedido());
 
-        PedidoFaturadoInput inputDePedidoFaturado = pedidoFaturadoProtoMapper.toInput(pedidoFaturado);
+        PedidoFaturadoInput inputDePedidoFaturado = pedidoFaturadoProtoMapper.toInput(pedidoEnviado);
         pedidosService.atualizarPedidoFaturado(
                 inputDePedidoFaturado.codigoDoPedido(),
                 inputDePedidoFaturado.statusDoPedido(),

@@ -19,6 +19,7 @@ public interface PedidosMapper {
     PedidosMapper INSTANCE = Mappers.getMapper(PedidosMapper.class);
     ItemPedidosMapper ITEM_PEDIDOS_MAPPER_INSTANCE = ItemPedidosMapper.INSTANCE;
 
+    @Mapping(source = "chavePagamento", target = "chaveDePagamento")
     PedidoResponseDto persistenceToDtoResponse(PedidoPersistence pedidoPersistence);
 
     @Mapping(source = "itens", target = "itens", qualifiedByName = "mapearItensDoPedido")

@@ -56,7 +56,7 @@ public class PedidosService {
             pedido.setChavePagamento(chaveDePagamentoStripe);
         }
 
-        return pedido;
+        return pedidosRepository.save(pedido);
     }
 
     public PedidoPersistence obterPedidoPorCodigo(Long codigo) {
@@ -107,7 +107,10 @@ public class PedidosService {
     public void atualizarPedidoFaturado(Long codigoDoPedido, StatusPedido statusDoPedido, String urlNF, String codigoRastreio) {
         PedidoPersistence pedidoExistente = obterPedidoPorCodigo(codigoDoPedido);
         pedidoExistente.setStatus(statusDoPedido);
-        pedidoExistente.setUrlNotaFiscal(urlNF);
+
+        if (urlNF != null) {
+            pedidoExistente.setUrlNotaFiscal(urlNF);
+        }
 
         if (codigoRastreio != null) {
             pedidoExistente.setCodigoRastreio(codigoRastreio);
